@@ -1,11 +1,35 @@
 using auction.Data;
+using auction.Helpers;
 using auction.Repositories.Implementation;
 using auction.Repositories.Interface;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(x =>
+{
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!)),
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateIssuerSigningKey = true
+    };
+});
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
@@ -19,6 +43,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IEncryptDecrypt, EncryptDecrypt>();
 
 var app = builder.Build();
 
@@ -37,6 +63,8 @@ app.UseCors(options =>
   options.AllowAnyOrigin();
   options.AllowAnyMethod();
 });
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

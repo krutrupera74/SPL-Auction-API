@@ -17,6 +17,7 @@ namespace auction.Controllers
     {
       this.playerRepository = playerRepository;
     }
+
     [HttpPost]
     public async Task<IActionResult> RegisterPlayer([FromBody] PlayersDTO request)
     {
