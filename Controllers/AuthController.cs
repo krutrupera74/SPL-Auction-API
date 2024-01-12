@@ -1,6 +1,6 @@
 ﻿using auction.Models.Domain;
-using auction.Models.DTO;
 using auction.Repositories.Interface;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -26,18 +26,15 @@ namespace auction.Controllers
 
         public IUserRepository UserRepository { get; }
 
+        [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<LoginResponseDTO> Login([FromBody] LoginRequestDTO model)
+        public async Task<LoginResponse> Login([FromBody] LoginRequest model)
         {
-            if (!string.IsNullOrEmpty(model.Username))
-            {
-                model.Username = encryptDecrypt.Decrypt(model.Username);
-            }
 
             Users user = await UserRepository.GetUserDataByUsername(model.Username);
             if (user == null)
             {
-                return new LoginResponseDTO
+                return new LoginResponse
                 {
                     Authenticated = false,
                     Message = "User Not Found"
@@ -55,7 +52,7 @@ namespace auction.Controllers
                 // Example: Generate JWT token
                 var token = GenerateJwtToken(userId, userRole);
 
-                return new LoginResponseDTO
+                return new LoginResponse
                 {
                     Authenticated = true,
                     Message = "Login Successful",
@@ -64,7 +61,7 @@ namespace auction.Controllers
                     Username = model.Username
                 };
             }
-            return new LoginResponseDTO
+            return new LoginResponse
             {
                 Authenticated = false,
                 Message = "User Not Found"

@@ -1,6 +1,6 @@
-﻿namespace auction.Models.DTO
+﻿namespace auction.Models.Domain
 {
-    public class LoginRequestDTO
+    public class LoginRequest
     {
         public string Username { get; set; }
         public string Password { get; set; }
