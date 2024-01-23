@@ -5,6 +5,7 @@ using auction.Repositories.Interface;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,7 +30,12 @@ builder.Services.AddAuthentication(x =>
     };
 });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+    options.AddPolicy("UserOnly", policy => policy.RequireRole("User"));
+});
+
 
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
@@ -39,7 +45,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-  options.UseSqlServer(builder.Configuration.GetConnectionString("AuctionConnectionString"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AuctionConnectionString"));
 });
 
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
@@ -54,17 +60,30 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-  app.UseSwagger();
-  app.UseSwaggerUI();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();
 
 app.UseCors(options =>
 {
-  options.AllowAnyHeader();
-  options.AllowAnyOrigin();
-  options.AllowAnyMethod();
+    options.AllowAnyHeader();
+    options.AllowAnyOrigin();
+    options.AllowAnyMethod();
+});
+
+app.Use(async (context, next) =>
+{
+    var userRole = context.Request.Headers["X-User-Role"].FirstOrDefault();
+
+    if (!string.IsNullOrEmpty(userRole))
+    {
+        var identity = context.User.Identity as ClaimsIdentity;
+        identity.AddClaim(new Claim(ClaimTypes.Role, userRole));
+    }
+
+    await next();
 });
 
 app.UseAuthentication();

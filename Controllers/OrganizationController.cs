@@ -19,7 +19,6 @@ namespace auction.Controllers
             this.organizationRepository = organizationRepository;
         }
 
-        [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpPost]
         [Route("Add")]
         public async Task<IActionResult> AddOrganization(OrganizationDTO organizationDTO)
@@ -64,7 +63,6 @@ namespace auction.Controllers
             return Ok(response);
         }
 
-        [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpPost]
         [Route("Edit")]
         public async Task<IActionResult> EditOrganization(Organization organization)
@@ -94,7 +92,6 @@ namespace auction.Controllers
             return Ok(response);
         }
 
-        [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpGet]
         [Route("GetAllOrganizations")]
         public async Task<IActionResult> GetAllOrganization()
@@ -109,7 +106,6 @@ namespace auction.Controllers
             return Ok(response);
         }
 
-        [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpGet]
         [Route("GetActiveOrganizations")]
         public async Task<IActionResult> GetActiveOrganizations()
@@ -124,7 +120,6 @@ namespace auction.Controllers
             return Ok(response);
         }
 
-        [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpGet]
         [Route("GetOrganizationById")]
         public async Task<IActionResult> GetOrganizationById(Guid id)

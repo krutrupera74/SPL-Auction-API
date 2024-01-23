@@ -21,7 +21,7 @@ namespace auction.Controllers
             this.userRepository = userRepository;
         }
 
-        [Authorize(Roles = nameof(UserRole.Admin))]
+        [Authorize(Policy = "AdminOnly")]
         [HttpGet]
         [Route("GetAllUsers")]
         public async Task<IActionResult> GetAllUsers()
@@ -36,7 +36,6 @@ namespace auction.Controllers
             return Ok(response);
         }
 
-        [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpPost]
         [Route("Add")]
         public async Task<IActionResult> AddUser([FromBody] UsersDTO userDTO)
@@ -75,7 +74,6 @@ namespace auction.Controllers
             return Ok(response);
         }
 
-        [Authorize(Roles = nameof(UserRole.Admin))]
         [HttpGet]
         [Route("GetUserById")]
         public async Task<IActionResult> GetOrganizationById(Guid id)

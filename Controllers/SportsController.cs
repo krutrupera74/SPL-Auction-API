@@ -20,7 +20,6 @@ namespace auction.Controllers
             this.sportRepository = sportRepository;
         }
 
-        [Authorize(Roles = nameof(UserRole.User))]
         [HttpGet]
         [Route("GetAllSports")]
         public async Task<IActionResult> GetAllSports(Guid OrganizationId)
@@ -40,7 +39,6 @@ namespace auction.Controllers
             return Ok(response);
         }
 
-        [Authorize(Roles = nameof(UserRole.User))]
         [HttpPost]
         [Route("AddSport")]
         public async Task<IActionResult> AddSport(SportsDTO sportDTO)

@@ -22,7 +22,6 @@ namespace auction.Controllers
 
         public ITournamentRepository TournamentRepository { get; }
 
-        [Authorize(Roles = nameof(UserRole.User))]
         [HttpPost]
         [Route("Add")]
         public async Task<IActionResult> Add([FromBody] TournamentsDTO TournamentsDTO)
@@ -61,7 +60,6 @@ namespace auction.Controllers
             return Ok(response);
         }
 
-        [Authorize(Roles = nameof(UserRole.User))]
         [HttpGet]
         [Route("GetTournament")]
         public async Task<IActionResult> GetTournament(int Id)

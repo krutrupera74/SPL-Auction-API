@@ -17,7 +17,7 @@ namespace auction.Repositories.Implementation
         public async Task<DashboardResponseModel> GetDashboardData()
         {
             DashboardResponseModel responseModel = new DashboardResponseModel();
-            responseModel.UsersCount = await dbContext.Users.Where(x => x.IsActive).CountAsync();
+            responseModel.UsersCount = await dbContext.Users.Where(x => x.IsActive && x.Role != "Admin").CountAsync();
             responseModel.OrganizationsCount = await dbContext.Organizations.Where(x => x.IsActive).CountAsync();
             responseModel.TournamentsCount = await dbContext.Tournaments.Where(x => x.IsActive).CountAsync();
             responseModel.PlayersCount = await dbContext.Players.Where(x => x.IsActive).CountAsync();
