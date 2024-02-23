@@ -20,7 +20,9 @@ namespace auction.Repositories.Implementation
             responseModel.UsersCount = await dbContext.Users.Where(x => x.IsActive && x.Role != "Admin").CountAsync();
             responseModel.OrganizationsCount = await dbContext.Organizations.Where(x => x.IsActive).CountAsync();
             responseModel.TournamentsCount = await dbContext.Tournaments.Where(x => x.IsActive).CountAsync();
-            responseModel.PlayersCount = await dbContext.Players.Where(x => x.IsActive).CountAsync();
+            responseModel.PlayersCount = await dbContext.Players.CountAsync();
+            responseModel.SportsCount = await dbContext.Sports.Where(x => x.IsActive).CountAsync();
+            responseModel.TeamsCount = await dbContext.Teams.Where(x => x.IsActive).CountAsync();
 
             return responseModel;
         }

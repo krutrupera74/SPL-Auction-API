@@ -13,5 +13,7 @@
         public int OrganizationsCount { get; set; }
         public int TournamentsCount { get; set; }
         public int PlayersCount { get; set; }
+        public int SportsCount { get; set; }
+        public int TeamsCount { get; set; }
     }
 }

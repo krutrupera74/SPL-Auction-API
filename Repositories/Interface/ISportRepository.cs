@@ -4,7 +4,11 @@ namespace auction.Repositories.Interface
 {
     public interface ISportRepository
     {
-        Task<List<Sports>> GetAllSports(Guid OrganizationId);
+        Task<Sports> GetSportByOrganizationId(Guid OrganizationId);
+        Task<List<SportsList>> GetAllSports();
+        Task<List<Sports>> GetActiveSports();
         Task<Sports> AddSport(Sports sport);
+        Task<Sports> EditSport(Sports sport);
+        Task<Sports> GetSportById(Guid id);
     }
 }

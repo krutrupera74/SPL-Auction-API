@@ -22,10 +22,29 @@ namespace auction.Controllers
 
         [HttpGet]
         [Route("GetAllSports")]
-        public async Task<IActionResult> GetAllSports(Guid OrganizationId)
+        public async Task<IActionResult> GetAllSports()
         {
-            var sports = sportRepository.GetAllSports(OrganizationId);
+            var sports = await sportRepository.GetAllSports();
             if(sports == null)
+            {
+                return NotFound();
+            }
+
+            var response = new ResponseModel
+            {
+                Success = true,
+                Data = sports
+            };
+
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("GetActiveSports")]
+        public async Task<IActionResult> GetActiveSports()
+        {
+            var sports = await sportRepository.GetActiveSports();
+            if (sports == null)
             {
                 return NotFound();
             }
@@ -70,6 +89,59 @@ namespace auction.Controllers
             {
                 Success = true,
                 Message = "Sport Added Successfully."
+            };
+
+            return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("EditSport")]
+        public async Task<IActionResult> EditSport(Sports Sport)
+        {
+            if (Sport == null)
+            {
+                return BadRequest("Sport data is null");
+            }
+
+            var EditedSport = await sportRepository.EditSport(Sport);
+            if (EditedSport == null)
+            {
+                var BadResponse = new ResponseModel
+                {
+                    Success = false,
+                    Message = "Sport Not Updated."
+                };
+                return Ok(BadResponse);
+            }
+
+            var response = new ResponseModel
+            {
+                Success = true,
+                Message = "Sport Updated Successfully."
+            };
+
+            return Ok(response);
+        }
+
+        [HttpGet]
+        [Route("GetSportById")]
+        public async Task<IActionResult> GetSportById(Guid id)
+        {
+            Sports Sport = await sportRepository.GetSportById(id);
+            if (Sport == null)
+            {
+                var BadResponse = new ResponseModel
+                {
+                    Success = false,
+                    Message = "Sport Not Found."
+                };
+                return NotFound(BadResponse);
+            }
+
+            var response = new ResponseModel
+            {
+                Success = true,
+                Data = Sport
             };
 
             return Ok(response);

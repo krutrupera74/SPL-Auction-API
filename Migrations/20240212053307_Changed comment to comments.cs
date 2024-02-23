@@ -5,24 +5,24 @@
 namespace auction.Migrations
 {
     /// <inheritdoc />
-    public partial class changedusernameinusertable : Migration
+    public partial class Changedcommenttocomments : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.RenameColumn(
-                name: "UserName",
-                table: "Users",
-                newName: "Username");
+                name: "comment",
+                table: "Players",
+                newName: "comments");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.RenameColumn(
-                name: "Username",
-                table: "Users",
-                newName: "UserName");
+                name: "comments",
+                table: "Players",
+                newName: "comment");
         }
     }
 }

@@ -5,6 +5,13 @@ namespace auction.Repositories.Interface
     public interface ITournamentRepository
     {
         Task<Tournaments> AddTournament(Tournaments Tournament);
-        Task<Tournaments> GetTournament(int Id);
+        Task<Tournaments> EditTournament(Tournaments Tournament);
+        Task<Tournaments> GetTournament(Guid Id);
+
+        Task<List<TournamentList>> GetAllTournaments();
+
+        Task<List<Tournaments>> GetActiveTournaments();
+        Task<Tournaments> GeTournamentById(Guid id);
+        Task<Tournaments> ValidateTournament(Guid id);
     }
 }

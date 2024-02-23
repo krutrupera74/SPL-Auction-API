@@ -58,7 +58,8 @@ namespace auction.Controllers
                     Message = "Login Successful",
                     Role = userRole,
                     Token = token,
-                    Username = model.Username
+                    Username = model.Username,
+                    OrganizationId = UserModel.OrganizationId
                 };
             }
             return new LoginResponse

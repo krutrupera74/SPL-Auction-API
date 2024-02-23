@@ -2,13 +2,13 @@
 {
     public class Tournaments
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public bool IsActive { get; set; }
         public string Description { get; set; }
-        public int SportId { get; set; }
+        public Guid SportId { get; set; }
     }
 
     public class TournamentsDTO
@@ -18,6 +18,17 @@
         public DateTime EndDate { get; set; }
         public bool IsActive { get; set; }
         public string Description { get; set; }
-        public int SportId { get; set; }
+        public Guid SportId { get; set; }
+    }
+
+    public class TournamentList
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public bool IsActive { get; set; }
+        public string Description { get; set; }
+        public string Sport { get; set; }
     }
 }

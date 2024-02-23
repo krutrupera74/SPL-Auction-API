@@ -12,8 +12,8 @@ using auction.Data;
 namespace auction.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240110061817_Added Sports Table")]
-    partial class AddedSportsTable
+    [Migration("20240208121408_Changed player table")]
+    partial class Changedplayertable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,37 +45,22 @@ namespace auction.Migrations
 
             modelBuilder.Entity("auction.Models.Domain.Players", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BattingRating")
-                        .HasColumnType("int");
-
-                    b.Property<int>("BowlingRating")
-                        .HasColumnType("int");
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("Gender")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("TeamId")
+                    b.Property<int>("PlayerRating")
                         .HasColumnType("int");
 
-                    b.Property<int>("WicketKeepingRating")
-                        .HasColumnType("int");
+                    b.Property<Guid>("TournamentId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("comment")
                         .IsRequired()
@@ -88,11 +73,9 @@ namespace auction.Migrations
 
             modelBuilder.Entity("auction.Models.Domain.Sports", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -111,11 +94,9 @@ namespace auction.Migrations
 
             modelBuilder.Entity("auction.Models.Domain.Teams", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
@@ -128,8 +109,8 @@ namespace auction.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("TournamentId")
-                        .HasColumnType("int");
+                    b.Property<Guid>("TournamentId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Id");
 
@@ -138,11 +119,9 @@ namespace auction.Migrations
 
             modelBuilder.Entity("auction.Models.Domain.Tournaments", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -157,6 +136,9 @@ namespace auction.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("SportId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");

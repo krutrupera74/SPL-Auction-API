@@ -2,6 +2,7 @@ using auction.Data;
 using auction.Helpers;
 using auction.Repositories.Implementation;
 using auction.Repositories.Interface;
+using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -51,9 +52,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IEncryptDecrypt, EncryptDecrypt>();
+builder.Services.AddScoped<ISportRepository, SportRepository>();
 builder.Services.AddScoped<ITournamentRepository, TournamentsRepository>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
+builder.Services.AddScoped<ITeamRepository, TeamRepository>();
+
+builder.Services.AddSingleton(x => new BlobServiceClient(builder.Configuration.GetConnectionString("AzureBlobStorageConnectionString")));
+builder.Services.AddSingleton<IBlobService, BlobService>();
 
 var app = builder.Build();
 
