@@ -11,7 +11,7 @@ namespace auction.Repositories.Interface
         Task<List<TournamentList>> GetAllTournaments();
 
         Task<List<Tournaments>> GetActiveTournaments();
-        Task<Tournaments> GeTournamentById(Guid id);
+        Task<Tournaments> GetTournamentById(Guid id);
         Task<Tournaments> ValidateTournament(Guid id);
     }
 }

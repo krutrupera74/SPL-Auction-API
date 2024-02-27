@@ -5,6 +5,7 @@ using auction.Repositories.Interface;
 using Azure.Storage.Blobs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
@@ -57,9 +58,16 @@ builder.Services.AddScoped<ITournamentRepository, TournamentsRepository>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
+builder.Services.AddSingleton<IFileUploadHelper, FileUploadHelper>();
 
-builder.Services.AddSingleton(x => new BlobServiceClient(builder.Configuration.GetConnectionString("AzureBlobStorageConnectionString")));
-builder.Services.AddSingleton<IBlobService, BlobService>();
+builder.Services.AddSingleton(x =>
+{
+    var configuration = builder.Configuration.GetSection("AzureBlobStorage");
+    var connectionString = configuration["ConnectionString"];
+    return new BlobServiceClient(connectionString);
+});
+
+
 
 var app = builder.Build();
 

@@ -59,7 +59,7 @@ namespace auction.Repositories.Implementation
             return await dbContext.Tournaments.FirstOrDefaultAsync(s => s.Id == Id && s.IsActive);
         }
 
-        public async Task<Tournaments> GeTournamentById(Guid id)
+        public async Task<Tournaments> GetTournamentById(Guid id)
         {
             return await dbContext.Tournaments.Where(x => x.Id == id).FirstOrDefaultAsync();
         }

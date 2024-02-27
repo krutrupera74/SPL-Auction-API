@@ -3,7 +3,6 @@ using auction.Models.Enums;
 using auction.Repositories.Interface;
 using Azure;
 using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -12,37 +11,41 @@ using static auction.Models.Enums.EnumUtils;
 
 namespace auction.Helpers
 {
-
-    [Route("api/[controller]")]
-    [ApiController]
     public class FileUploadHelper : IFileUploadHelper
     {
 
         private readonly IConfiguration _configuration;
+        private readonly BlobServiceClient _blobServiceClient;
 
-        public FileUploadHelper(IConfiguration configuration)
+        public FileUploadHelper(IConfiguration configuration, BlobServiceClient blobServiceClient)
         {
             _configuration = configuration;
+            this._blobServiceClient = blobServiceClient;
         }
 
-        private async Task<string> UploadImageToBlobStorage(IFormFile image)
+        public async Task<string> UploadImage(IFormFile file)
         {
-            // Get connection string and container name from configuration
-            string connectionString = _configuration.GetValue<string>("AzureBlobStorage:ConnectionString");
-            string containerName = _configuration.GetValue<string>("AzureBlobStorage:ContainerName");
+            if (file == null || file.Length == 0)
+            {
+                throw new ArgumentException("Invalid file");
+            }
 
-            // Create a BlobServiceClient
-            var blobServiceClient = new BlobServiceClient(connectionString);
+            if (file.ContentType.ToLower() != "image/jpeg" && file.ContentType.ToLower() != "image/png")
+            {
+                throw new ArgumentException("Only JPEG and PNG images are allowed");
+            }
 
-            // Get a reference to a container
-            var blobContainerClient = blobServiceClient.GetBlobContainerClient(containerName);
+            var containerClient = _blobServiceClient.GetBlobContainerClient(_configuration["AzureBlobStorage:ContainerName"]);
+            var blobClient = containerClient.GetBlobClient(Guid.NewGuid().ToString() + Path.GetExtension(file.FileName));
 
-            // Upload image to Blob Storage
-            var blobClient = blobContainerClient.GetBlobClient(Guid.NewGuid().ToString() + ".jpg");
-            await blobClient.UploadAsync(image.OpenReadStream(), true);
+            using (var stream = file.OpenReadStream())
+            {
+                await blobClient.UploadAsync(stream, true);
+            }
 
-            // Return the URL of the uploaded image
-            return blobClient.Uri.ToString();
+            // Get the URL of the uploaded image
+            return blobClient.Uri.AbsoluteUri;
         }
+
     }
 }

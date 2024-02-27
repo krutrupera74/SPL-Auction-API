@@ -3,7 +3,6 @@ using auction.Repositories.Implementation;
 using auction.Repositories.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using static auction.Models.Enums.Enum;
 using System.Data;
 
 namespace auction.Controllers

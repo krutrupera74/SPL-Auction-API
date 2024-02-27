@@ -4,6 +4,6 @@ namespace auction.Repositories.Interface
 {
     public interface IFileUploadHelper
     {
-        Task<string> UploadImageToBlobStorage(IFormFile image);
+        Task<string> UploadImage(IFormFile file);
     }
 }

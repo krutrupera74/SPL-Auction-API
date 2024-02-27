@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using static auction.Models.Enums.Enum;
 using System.Data;
 using auction.Repositories.Implementation;
 
@@ -147,10 +146,10 @@ namespace auction.Controllers
         }
 
         [HttpGet]
-        [Route("GeTournamentById")]
-        public async Task<IActionResult> GeTournamentById(Guid id)
+        [Route("GetTournamentById")]
+        public async Task<IActionResult> GetTournamentById(Guid id)
         {
-            Tournaments Tournament = await TournamentRepository.GeTournamentById(id);
+            Tournaments Tournament = await TournamentRepository.GetTournamentById(id);
             if (Tournament == null)
             {
                 var BadResponse = new ResponseModel

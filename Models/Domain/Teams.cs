@@ -4,7 +4,7 @@
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public IFormFile Image { get; set; }
+        public string ImagePath { get; set; }
         public Guid TournamentId { get; set; }
         public bool IsActive { get; set; }
     }
@@ -21,7 +21,7 @@
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public IFormFile Image { get; set; }
+        public string ImagePath { get; set; }
         public string Tournament { get; set; }
         public bool IsActive { get; set; }
     }

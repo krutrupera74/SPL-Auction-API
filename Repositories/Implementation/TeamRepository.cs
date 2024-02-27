@@ -13,6 +13,29 @@ namespace auction.Repositories.Implementation
         {
             this.dbContext = dbContext;
         }
+
+        public async Task<Teams> AddTeam(Teams team)
+        {
+            await dbContext.Teams.AddAsync(team);
+            await dbContext.SaveChangesAsync();
+            return team;
+        }
+
+        public async Task<Teams> EditTeam(Teams Team)
+        {
+            var existingTeam = await dbContext.Teams.Where(x => x.Id == Team.Id).FirstOrDefaultAsync();
+            if (existingTeam != null)
+            {
+                existingTeam.Name = Team.Name;
+                existingTeam.IsActive = Team.IsActive;
+                existingTeam.ImagePath = Team.ImagePath;
+                existingTeam.TournamentId = Team.TournamentId;
+                await dbContext.SaveChangesAsync();
+                return existingTeam;
+            }
+            return null;
+        }
+
         public async Task<List<TeamsList>> GetAllTeams()
         {
             return await dbContext.Teams
@@ -33,9 +56,15 @@ namespace auction.Repositories.Implementation
                                 Id = x.Team.Id,
                                 Name = x.Team.Name,
                                 IsActive = x.Team.IsActive,
+                                ImagePath = x.Team.ImagePath,
                                 Tournament = tournament.Name
                             })
                         .ToListAsync();
+        }
+
+        public async Task<Teams> GetTeamById(Guid id)
+        {
+            return await dbContext.Teams.Where(x => x.Id == id).FirstOrDefaultAsync();
         }
     }
 }
