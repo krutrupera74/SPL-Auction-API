@@ -35,6 +35,7 @@ namespace auction.Repositories.Implementation
         public async Task<List<SportsList>> GetAllSports()
         {
             return await dbContext.Sports.OrderBy(x => x.Name)
+                         .Where(x => x.IsActive == true)
                          .GroupJoin(
                         dbContext.Organizations,
                         sport => sport.OrganizationId,
@@ -73,6 +74,16 @@ namespace auction.Repositories.Implementation
                 return existingSport;
             }
             return null;
+        }
+
+        public async Task DeleteSport(Guid Id)
+        {
+            var existingSport = await dbContext.Sports.Where(x => x.Id == Id).FirstOrDefaultAsync();
+            if (existingSport != null)
+            {
+                existingSport.IsActive = false;
+                await dbContext.SaveChangesAsync();
+            }
         }
     }
 }

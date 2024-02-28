@@ -9,5 +9,6 @@ namespace auction.Repositories.Interface
         Task<Teams> AddTeam(Teams team);
         Task<Teams> EditTeam(Teams team);
         Task<Teams> GetTeamById(Guid id);
+        Task DeleteTeam(Guid Id);
     }
 }
