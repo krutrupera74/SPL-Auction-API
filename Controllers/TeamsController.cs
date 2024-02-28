@@ -171,5 +171,34 @@ namespace auction.Controllers
 
             return Ok(response);
         }
+
+        [HttpDelete]
+        [Route("DeleteTeam")]
+        public async Task<IActionResult> DeleteSport(Guid id)
+        {
+            Teams Team = await teamRepository.GetTeamById(id);
+            if (Team == null)
+            {
+                var BadResponse = new ResponseModel
+                {
+                    Success = false,
+                    Message = "Tournament Not Found."
+                };
+                return NotFound(BadResponse);
+            }
+            else
+            {
+                await teamRepository.DeleteTeam(id);
+            }
+
+            var response = new ResponseModel
+            {
+                Success = true,
+                Data = null,
+                Message = "Sport deleted Succesfully."
+            };
+
+            return Ok(response);
+        }
     }
 }

@@ -13,5 +13,6 @@ namespace auction.Repositories.Interface
         Task<List<Tournaments>> GetActiveTournaments();
         Task<Tournaments> GetTournamentById(Guid id);
         Task<Tournaments> ValidateTournament(Guid id);
+        Task DeleteTournament(Guid Id);
     }
 }

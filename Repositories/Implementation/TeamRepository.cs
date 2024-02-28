@@ -40,7 +40,8 @@ namespace auction.Repositories.Implementation
         {
             return await dbContext.Teams
                         .OrderBy(x => x.Name)
-            .GroupJoin(
+                        .Where(x => x.IsActive == true)
+                        .GroupJoin(
                             dbContext.Tournaments,
                             team => team.TournamentId,
                             tournament => tournament.Id,
@@ -65,6 +66,16 @@ namespace auction.Repositories.Implementation
         public async Task<Teams> GetTeamById(Guid id)
         {
             return await dbContext.Teams.Where(x => x.Id == id).FirstOrDefaultAsync();
+        }
+
+        public async Task DeleteTeam(Guid Id)
+        {
+            var existingTeam = await dbContext.Teams.Where(x => x.Id == Id).FirstOrDefaultAsync();
+            if (existingTeam != null)
+            {
+                existingTeam.IsActive = false;
+                await dbContext.SaveChangesAsync();
+            }
         }
     }
 }

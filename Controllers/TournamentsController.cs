@@ -168,5 +168,34 @@ namespace auction.Controllers
 
             return Ok(response);
         }
+
+        [HttpDelete]
+        [Route("DeleteTournament")]
+        public async Task<IActionResult> DeleteTournament(Guid id)
+        {
+            Tournaments Tournament = await TournamentRepository.GetTournamentById(id);
+            if (Tournament == null)
+            {
+                var BadResponse = new ResponseModel
+                {
+                    Success = false,
+                    Message = "Tournament Not Found."
+                };
+                return NotFound(BadResponse);
+            }
+            else
+            {
+                await TournamentRepository.DeleteTournament(id);
+            }
+
+            var response = new ResponseModel
+            {
+                Success = true,
+                Data = null,
+                Message = "Tournament deleted Succesfully."
+            };
+
+            return Ok(response);
+        }
     }
 }
