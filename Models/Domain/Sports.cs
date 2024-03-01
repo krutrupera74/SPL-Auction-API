@@ -6,6 +6,7 @@
         public string Name { get; set; }
         public bool IsActive { get; set; }
         public Guid OrganizationId { get; set; }
+        public bool IsDuplicate { get; set; } = false;
     }
 
     public class SportsDTO

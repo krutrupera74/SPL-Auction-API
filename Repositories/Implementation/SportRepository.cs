@@ -17,6 +17,18 @@ namespace auction.Repositories.Implementation
 
         public async Task<Sports> AddSport([FromBody] Sports sport)
         {
+            List<SportsList> sports = await GetAllSports();
+            foreach (var sp in sports)
+            {
+                if (sp != null)
+                {
+                    if (sport.Name == null || String.Compare(sp.Name, sport.Name, true) == 0)
+                    {
+                        sport.IsDuplicate = true;
+                        return sport;
+                    }                        
+                }
+            }
             await dbContext.Sports.AddAsync(sport);
             await dbContext.SaveChangesAsync();
             return sport;
@@ -64,6 +76,19 @@ namespace auction.Repositories.Implementation
 
         public async Task<Sports> EditSport(Sports Sport)
         {
+            List<SportsList> sportsList = await GetAllSports();
+            sportsList = sportsList.Where(x => x.Id != Sport.Id).ToList();
+            foreach (var sp in sportsList)
+            {
+                if (sp != null)
+                {
+                    if (Sport.Name == null || String.Compare(sp.Name, Sport.Name, true) == 0)
+                    {
+                        Sport.IsDuplicate = true;
+                        return Sport;
+                    }
+                }
+            }
             var existingSport = await dbContext.Sports.Where(x => x.Id == Sport.Id).FirstOrDefaultAsync();
             if (existingSport != null)
             {
@@ -78,7 +103,7 @@ namespace auction.Repositories.Implementation
 
         public async Task DeleteSport(Guid Id)
         {
-            var existingSport = await dbContext.Sports.Where(x => x.Id == Id).FirstOrDefaultAsync();
+            var existingSport = await dbContext.Sports.Where(x => x.Id == Id && x.IsActive).FirstOrDefaultAsync();
             if (existingSport != null)
             {
                 existingSport.IsActive = false;
@@ -88,7 +113,7 @@ namespace auction.Repositories.Implementation
 
         public async Task<bool> IsSportExistInTournament(Guid id)
         {
-            var result = await dbContext.Tournaments.Where(x => x.SportId == id).FirstOrDefaultAsync();
+            var result = await dbContext.Tournaments.Where(x => x.SportId == id && x.IsActive).FirstOrDefaultAsync();
             if (result == null)
             {
                 return false;

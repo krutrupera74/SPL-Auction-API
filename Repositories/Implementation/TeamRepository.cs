@@ -16,6 +16,19 @@ namespace auction.Repositories.Implementation
 
         public async Task<Teams> AddTeam(Teams team)
         {
+            List<TeamsList> teamsList = await GetAllTeams();
+            foreach (var tm in teamsList)
+            {
+                if (tm != null)
+                {
+                    if (team.Name == null || String.Compare(tm.Name, team.Name, true) == 0)
+                    {
+                        team.IsDuplicate = true;
+                        return team;
+                    }
+                }
+            }
+
             await dbContext.Teams.AddAsync(team);
             await dbContext.SaveChangesAsync();
             return team;
@@ -23,6 +36,20 @@ namespace auction.Repositories.Implementation
 
         public async Task<Teams> EditTeam(Teams Team)
         {
+            List<TeamsList> teamsList = await GetAllTeams();
+            teamsList = teamsList.Where(x => x.Id != Team.Id).ToList();
+            foreach (var tm in teamsList)
+            {
+                if (tm != null)
+                {
+                    if (Team.Name == null || String.Compare(tm.Name, Team.Name, true) == 0)
+                    {
+                        Team.IsDuplicate = true;
+                        return Team;
+                    }
+                }
+            }
+
             var existingTeam = await dbContext.Teams.Where(x => x.Id == Team.Id).FirstOrDefaultAsync();
             if (existingTeam != null)
             {
@@ -70,7 +97,7 @@ namespace auction.Repositories.Implementation
 
         public async Task DeleteTeam(Guid Id)
         {
-            var existingTeam = await dbContext.Teams.Where(x => x.Id == Id).FirstOrDefaultAsync();
+            var existingTeam = await dbContext.Teams.Where(x => x.Id == Id && x.IsActive).FirstOrDefaultAsync();
             if (existingTeam != null)
             {
                 existingTeam.IsActive = false;
