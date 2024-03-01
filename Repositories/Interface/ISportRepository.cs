@@ -11,5 +11,6 @@ namespace auction.Repositories.Interface
         Task<Sports> EditSport(Sports sport);
         Task<Sports> GetSportById(Guid id);
         Task DeleteSport(Guid Id);
+        Task<bool> IsSportExistInTournament(Guid id);
     }
 }
