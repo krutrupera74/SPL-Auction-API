@@ -185,17 +185,29 @@ namespace auction.Controllers
             }
             else
             {
-                await TournamentRepository.DeleteTournament(id);
+                var IsTournamentExistInTeam = await TournamentRepository.IsTournamentExistInTeam(id);
+                if (IsTournamentExistInTeam)
+                {
+                    var BadResponse = new ResponseModel
+                    {
+                        Success = false,
+                        Message = "Deletion is restricted as this tournament is currently linked with a team."
+                    };
+                    return Ok(BadResponse);
+                }
+                else
+                {
+                    await TournamentRepository.DeleteTournament(id);
+                    var response = new ResponseModel
+                    {
+                        Success = true,
+                        Data = null,
+                        Message = "Tournament deleted Succesfully."
+                    };
+
+                    return Ok(response);
+                }
             }
-
-            var response = new ResponseModel
-            {
-                Success = true,
-                Data = null,
-                Message = "Tournament deleted Succesfully."
-            };
-
-            return Ok(response);
         }
     }
 }

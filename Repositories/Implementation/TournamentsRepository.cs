@@ -96,5 +96,18 @@ namespace auction.Repositories.Implementation
                 await dbContext.SaveChangesAsync();
             }
         }
+
+        public async Task<bool> IsTournamentExistInTeam(Guid id)
+        {
+            var result = await dbContext.Teams.Where(x => x.TournamentId == id).FirstOrDefaultAsync();
+            if (result == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
     }
 }

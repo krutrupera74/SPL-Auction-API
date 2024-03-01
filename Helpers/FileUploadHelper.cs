@@ -23,7 +23,7 @@ namespace auction.Helpers
             this._blobServiceClient = blobServiceClient;
         }
 
-        public async Task<string> UploadImage(IFormFile file)
+        public async Task<string> UploadImage(IFormFile file, string folderName)
         {
             if (file == null || file.Length == 0)
             {
@@ -36,7 +36,8 @@ namespace auction.Helpers
             }
 
             var containerClient = _blobServiceClient.GetBlobContainerClient(_configuration["AzureBlobStorage:ContainerName"]);
-            var blobClient = containerClient.GetBlobClient(Guid.NewGuid().ToString() + Path.GetExtension(file.FileName));
+            var blobName = $"{folderName}/{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
+            var blobClient = containerClient.GetBlobClient(blobName);
 
             using (var stream = file.OpenReadStream())
             {

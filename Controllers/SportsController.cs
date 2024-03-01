@@ -24,7 +24,7 @@ namespace auction.Controllers
         public async Task<IActionResult> GetAllSports()
         {
             var sports = await sportRepository.GetAllSports();
-            if(sports == null)
+            if (sports == null)
             {
                 return NotFound();
             }
@@ -61,7 +61,7 @@ namespace auction.Controllers
         [Route("AddSport")]
         public async Task<IActionResult> AddSport(SportsDTO sportDTO)
         {
-            if(sportDTO == null)
+            if (sportDTO == null)
             {
                 return BadRequest("Sport Data Is Null");
             }
@@ -162,17 +162,29 @@ namespace auction.Controllers
             }
             else
             {
-                await sportRepository.DeleteSport(id);
+                var IsSportExistInTournament = await sportRepository.IsSportExistInTournament(id);
+                if (IsSportExistInTournament)
+                {
+                    var BadResponse = new ResponseModel
+                    {
+                        Success = false,
+                        Message = "Deletion is restricted as this sport is currently linked with a tournament."
+                    };
+                    return Ok(BadResponse);
+                }
+                else
+                {
+                    await sportRepository.DeleteSport(id);
+                    var response = new ResponseModel
+                    {
+                        Success = true,
+                        Data = null,
+                        Message = "Sport deleted Succesfully."
+                    };
+
+                    return Ok(response);
+                }
             }
-
-            var response = new ResponseModel
-            {
-                Success = true,
-                Data = null,
-                Message = "Sport deleted Succesfully."
-            };
-
-            return Ok(response);
         }
     }
 }
