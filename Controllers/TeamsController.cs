@@ -61,7 +61,7 @@ namespace auction.Controllers
                 return BadRequest("Only JPEG and PNG images are allowed");
             }
 
-            var imageUrl = await fileUploadHelper.UploadImage(file);
+            var imageUrl = await fileUploadHelper.UploadImage(file, "team_logos");
 
             var Team = new Teams
             {
@@ -94,16 +94,16 @@ namespace auction.Controllers
 
         [HttpPost]
         [Route("EditTeam")]
-        public async Task<IActionResult> EditTeam(Teams Team)
+        public async Task<IActionResult> EditTeam(IFormCollection formData)
         {
-            var formCollection = await Request.ReadFormAsync();
-            var file = formCollection.Files.GetFile("image");
-            var imageUrl = formCollection["imageUrl"];
-            var name = formCollection["name"];
-            var tournamentId = Guid.Parse(formCollection["tournamentId"]);
-            var isActive = bool.Parse(formCollection["isActive"]);
+            var file = formData.Files.GetFile("image");
+            var imageUrl = formData["imageUrl"];
+            var name = formData["name"];
+            var tournamentId = Guid.Parse(formData["tournamentId"]);
+            var isActive = bool.Parse(formData["isActive"]);
+            var Id = Guid.Parse(formData["id"]);
 
-            var existingTeam = await teamRepository.GetTeamById(Team.Id);
+            var existingTeam = await teamRepository.GetTeamById(Id);
             if (existingTeam == null)
             {
                 return NotFound("Team not found");
@@ -118,7 +118,7 @@ namespace auction.Controllers
 
                 if (existingTeam.ImagePath != imageUrl)
                 {
-                    var newImageUrl = await fileUploadHelper.UploadImage(file);
+                    var newImageUrl = await fileUploadHelper.UploadImage(file, "team_logos");
                     existingTeam.ImagePath = newImageUrl;
                 }
             }
