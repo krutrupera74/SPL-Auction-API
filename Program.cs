@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Security.Claims;
 using System.Text;
 
@@ -70,6 +71,10 @@ builder.Services.AddSingleton(x =>
 
 
 var app = builder.Build();
+
+using var scope = app.Services.CreateScope();
+await using var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+await dbContext.Database.MigrateAsync();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
