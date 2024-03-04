@@ -99,7 +99,7 @@ namespace auction.Repositories.Implementation
                 {
                     if (Tournament.Name == null || String.Compare(tm.Name, Tournament.Name, true) == 0)
                     {
-                        if(sports!= null)
+                        if (sports != null)
                         {
                             foreach (var sp in sports)
                             {
@@ -109,7 +109,7 @@ namespace auction.Repositories.Implementation
                                     return Tournament;
                                 }
                             }
-                        }                        
+                        }
                     }
                 }
             }
@@ -128,9 +128,26 @@ namespace auction.Repositories.Implementation
             return null;
         }
 
-        public async Task<Tournaments> ValidateTournament(Guid id)
+        public async Task<ValidateTournament> ValidateTournament(Guid id)
         {
-            return await dbContext.Tournaments.Where(x => x.Id == id).FirstOrDefaultAsync();
+            return await dbContext.Tournaments.Where(x => x.Id == id && x.IsActive)
+                .Join(dbContext.Sports,
+                tournament => tournament.SportId,
+                sport => sport.Id,
+                (tournament, sport) => new { Tournament = tournament, SportName = sport.Name })
+                .Select(result => new ValidateTournament
+                {
+                    Id = result.Tournament.Id,
+                    Name = result.Tournament.Name,
+                    SportId = result.Tournament.SportId,
+                    Description = result.Tournament.Description,
+                    EndDate = result.Tournament.EndDate,
+                    IsActive = result.Tournament.IsActive,
+                    IsDuplicate = result.Tournament.IsDuplicate,
+                    StartDate = result.Tournament.StartDate,
+                    IsCricket = result.SportName.Trim().Equals("cricket", StringComparison.OrdinalIgnoreCase)
+                })
+                .FirstOrDefaultAsync();
         }
 
         public async Task DeleteTournament(Guid Id)
