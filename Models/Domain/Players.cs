@@ -8,6 +8,7 @@ namespace auction.Models.Domain
         public int PlayerRating { get; set; }
         public string comments { get; set; }
         public Guid TournamentId { get; set; }
+        public bool IsDuplicate { get; set; } = false;
     }
 
     public class PlayersDTO

@@ -16,6 +16,29 @@ namespace auction.Repositories.Implementation
         }
         public async Task<Tournaments> AddTournament([FromBody] Tournaments Tournament)
         {
+
+            List<TournamentList> tournamentList = await GetAllTournaments();
+            List<Sports> sports = await dbContext.Sports.Where(x => x.Id == Tournament.SportId).ToListAsync();
+            foreach (var tm in tournamentList)
+            {
+                if (tm != null)
+                {
+                    if (Tournament.Name == null || String.Compare(tm.Name, Tournament.Name, true) == 0)
+                    {
+                        if (sports != null)
+                        {
+                            foreach (var sp in sports)
+                            {
+                                if (String.Compare(sp.Name, tm.Sport, true) == 0)
+                                {
+                                    Tournament.IsDuplicate = true;
+                                    return Tournament;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             await dbContext.Tournaments.AddAsync(Tournament);
             await dbContext.SaveChangesAsync();
             return Tournament;
@@ -67,6 +90,29 @@ namespace auction.Repositories.Implementation
 
         public async Task<Tournaments> EditTournament(Tournaments Tournament)
         {
+            List<TournamentList> tournamentList = await GetAllTournaments();
+            List<Sports> sports = await dbContext.Sports.Where(x => x.Id == Tournament.SportId).ToListAsync();
+            tournamentList = tournamentList.Where(x => x.Id != Tournament.Id).ToList();
+            foreach (var tm in tournamentList)
+            {
+                if (tm != null)
+                {
+                    if (Tournament.Name == null || String.Compare(tm.Name, Tournament.Name, true) == 0)
+                    {
+                        if(sports!= null)
+                        {
+                            foreach (var sp in sports)
+                            {
+                                if (String.Compare(sp.Name, tm.Sport, true) == 0)
+                                {
+                                    Tournament.IsDuplicate = true;
+                                    return Tournament;
+                                }
+                            }
+                        }                        
+                    }
+                }
+            }
             var existingTournament = await dbContext.Tournaments.Where(x => x.Id == Tournament.Id).FirstOrDefaultAsync();
             if (existingTournament != null)
             {
@@ -89,7 +135,7 @@ namespace auction.Repositories.Implementation
 
         public async Task DeleteTournament(Guid Id)
         {
-            var existingTournament = await dbContext.Tournaments.Where(x => x.Id == Id).FirstOrDefaultAsync();
+            var existingTournament = await dbContext.Tournaments.Where(x => x.Id == Id && x.IsActive).FirstOrDefaultAsync();
             if (existingTournament != null)
             {
                 existingTournament.IsActive = false;
@@ -99,7 +145,7 @@ namespace auction.Repositories.Implementation
 
         public async Task<bool> IsTournamentExistInTeam(Guid id)
         {
-            var result = await dbContext.Teams.Where(x => x.TournamentId == id).FirstOrDefaultAsync();
+            var result = await dbContext.Teams.Where(x => x.TournamentId == id && x.IsActive).FirstOrDefaultAsync();
             if (result == null)
             {
                 return false;

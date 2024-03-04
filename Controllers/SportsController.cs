@@ -84,6 +84,16 @@ namespace auction.Controllers
                 return BadRequest(BadResponse);
             }
 
+            if(AddedSport.IsDuplicate)
+            {
+                var DuplicateResponse = new ResponseModel
+                {
+                    Success = false,
+                    Message = "Sport Already Available."
+                };
+                return BadRequest(DuplicateResponse);
+            }
+
             var response = new ResponseModel
             {
                 Success = true,
@@ -111,6 +121,16 @@ namespace auction.Controllers
                     Message = "Sport Not Updated."
                 };
                 return Ok(BadResponse);
+            }
+
+            if (EditedSport.IsDuplicate)
+            {
+                var DuplicateResponse = new ResponseModel
+                {
+                    Success = false,
+                    Message = "Sport Already Available."
+                };
+                return BadRequest(DuplicateResponse);
             }
 
             var response = new ResponseModel

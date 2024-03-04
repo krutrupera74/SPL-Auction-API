@@ -9,6 +9,7 @@
         public bool IsActive { get; set; }
         public string Description { get; set; }
         public Guid SportId { get; set; }
+        public bool IsDuplicate { get; set; } = false;
     }
 
     public class TournamentsDTO

@@ -83,6 +83,16 @@ namespace auction.Controllers
                 return BadRequest(BadResponse);
             }
 
+            if (AddedTeam.IsDuplicate)
+            {
+                var DuplicateResponse = new ResponseModel
+                {
+                    Success = false,
+                    Message = "Team Already Available."
+                };
+                return BadRequest(DuplicateResponse);
+            }
+
             var response = new ResponseModel
             {
                 Success = true,
@@ -139,6 +149,16 @@ namespace auction.Controllers
                 return BadRequest(badResponse);
             }
 
+            if (updatedTeam.IsDuplicate)
+            {
+                var DuplicateResponse = new ResponseModel
+                {
+                    Success = false,
+                    Message = "Team Already Available."
+                };
+                return BadRequest(DuplicateResponse);
+            }
+
             var response = new ResponseModel
             {
                 Success = true,
@@ -174,7 +194,7 @@ namespace auction.Controllers
 
         [HttpDelete]
         [Route("DeleteTeam")]
-        public async Task<IActionResult> DeleteSport(Guid id)
+        public async Task<IActionResult> DeleteTeam(Guid id)
         {
             Teams Team = await teamRepository.GetTeamById(id);
             if (Team == null)
@@ -182,7 +202,7 @@ namespace auction.Controllers
                 var BadResponse = new ResponseModel
                 {
                     Success = false,
-                    Message = "Tournament Not Found."
+                    Message = "Team Not Found."
                 };
                 return NotFound(BadResponse);
             }
@@ -195,7 +215,7 @@ namespace auction.Controllers
             {
                 Success = true,
                 Data = null,
-                Message = "Sport deleted Succesfully."
+                Message = "Team deleted Succesfully."
             };
 
             return Ok(response);

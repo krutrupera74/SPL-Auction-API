@@ -52,6 +52,16 @@ namespace auction.Controllers
                 return BadRequest(BadResponse);
             }
 
+            if (AddedTournament.IsDuplicate)
+            {
+                var DuplicateResponse = new ResponseModel
+                {
+                    Success = false,
+                    Message = "Tournament Already Available."
+                };
+                return BadRequest(DuplicateResponse);
+            }
+
             var response = new ResponseModel
             {
                 Success = true,
@@ -79,6 +89,16 @@ namespace auction.Controllers
                     Message = "Tournament Not Updated."
                 };
                 return Ok(BadResponse);
+            }
+
+            if (EditedTournament.IsDuplicate)
+            {
+                var DuplicateResponse = new ResponseModel
+                {
+                    Success = false,
+                    Message = "Tournament Already Available."
+                };
+                return BadRequest(DuplicateResponse);
             }
 
             var response = new ResponseModel
