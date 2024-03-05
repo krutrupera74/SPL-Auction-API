@@ -1,8 +1,6 @@
 using auction.Models.Domain;
-using auction.Repositories.Implementation;
 using auction.Repositories.Interface;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace auction.Controllers
@@ -13,11 +11,13 @@ namespace auction.Controllers
     {
         private readonly IPlayerRepository playerRepository;
         private readonly ITournamentRepository tournamentRepository;
+        private readonly IFileUploadHelper fileUploadHelper;
 
-        public RegistrationController(IPlayerRepository playerRepository, ITournamentRepository tournamentRepository)
+        public RegistrationController(IPlayerRepository playerRepository, ITournamentRepository tournamentRepository, IFileUploadHelper fileUploadHelper)
         {
             this.playerRepository = playerRepository;
             this.tournamentRepository = tournamentRepository;
+            this.fileUploadHelper = fileUploadHelper;
         }
 
         [AllowAnonymous]
@@ -30,13 +30,38 @@ namespace auction.Controllers
                 return BadRequest("Player details are null.");
             }
 
+            var formCollection = await Request.ReadFormAsync();
+            var file = formCollection.Files.GetFile("image");
+
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("Invalid file");
+            }
+
+            if (file.ContentType.ToLower() != "image/jpeg" && file.ContentType.ToLower() != "image/png")
+            {
+                return BadRequest("Only JPEG and PNG images are allowed");
+            }
+
+            var imageUrl = await fileUploadHelper.UploadImage(file, "player_images");
+
             Players player = new Players()
             {
                 Name = request.Name,
                 Gender = request.Gender,
                 comments = request.comments,
                 PlayerRating = request.PlayerRating,
-                TournamentId = request.TournamentId
+                TournamentId = request.TournamentId,
+                BatsmanHand = request.BatsmanHand,
+                BowlerHand = request.BowlerHand,
+                BowlingRating = request.BowlingRating,
+                BowlingStyle = request.BowlingStyle,
+                CaptainOrOwner = request.CaptainOrOwner,
+                Email = request.Email,
+                EmployeeNo = request.EmployeeNo,
+                InterestedInCaptainOrOwner = request.InterestedInCaptainOrOwner,
+                WicketKeepingRating = request.WicketKeepingRating,
+                ImagePath = imageUrl
             };
 
             var addedPlayer = await playerRepository.AddPlayer(player);

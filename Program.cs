@@ -1,8 +1,10 @@
 using auction.Data;
 using auction.Helpers;
+using auction.Models.Domain;
 using auction.Repositories.Implementation;
 using auction.Repositories.Interface;
 using Azure.Storage.Blobs;
+using MailKit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -60,6 +62,8 @@ builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<IOrganizationRepository, OrganizationRepository>();
 builder.Services.AddScoped<ITeamRepository, TeamRepository>();
 builder.Services.AddSingleton<IFileUploadHelper, FileUploadHelper>();
+builder.Services.AddTransient<IEmailRepository, EmailRepository>();
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 builder.Services.AddSingleton(x =>
 {
