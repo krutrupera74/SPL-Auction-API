@@ -79,7 +79,7 @@ namespace auction.Controllers
                         Data = null
                     };
 
-                    return Ok(NotFoundResponse);
+                    return Unauthorized(NotFoundResponse);
                 }
 
                 var response = new ResponseModel
@@ -100,7 +100,7 @@ namespace auction.Controllers
                     Data = null
                 };
 
-                return Ok(NotFoundResponse);
+                return Unauthorized(NotFoundResponse);
             }
         }
     }
