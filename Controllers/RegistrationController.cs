@@ -61,6 +61,9 @@ namespace auction.Controllers
                 EmployeeNo = request.EmployeeNo,
                 InterestedInCaptainOrOwner = request.InterestedInCaptainOrOwner,
                 WicketKeepingRating = request.WicketKeepingRating,
+                PlayerAvailability = request.PlayerAvailability,
+                IsMarquee = request.IsMarquee,
+                Mobile = request.Mobile,
                 ImagePath = imageUrl
             };
 

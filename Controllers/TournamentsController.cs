@@ -39,6 +39,8 @@ namespace auction.Controllers
                 IsActive = TournamentsDTO.IsActive,
                 Description = TournamentsDTO.Description,
                 SportId = TournamentsDTO.SportId,
+                Venue = TournamentsDTO.Venue,
+                TournamentDates = TournamentsDTO.TournamentDates,
             };
 
             var AddedTournament = await TournamentRepository.AddTournament(Tournament);
