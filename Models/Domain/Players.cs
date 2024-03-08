@@ -20,6 +20,9 @@ namespace auction.Models.Domain
         public bool IsDuplicate { get; set; } = false;
         public bool InterestedInCaptainOrOwner { get; set; } = false;
         public string ImagePath { get; set; }
+        public string Mobile { get; set; }
+        public bool IsMarquee { get; set; } = false;
+        public string PlayerAvailability { get; set; }
     }
 
     public class PlayersDTO
@@ -40,5 +43,8 @@ namespace auction.Models.Domain
         public Guid TournamentId { get; set; }
         public bool InterestedInCaptainOrOwner { get; set; } = false;
         public string ImagePath { get; set; }
+        public string Mobile { get; set; }
+        public bool IsMarquee { get; set; } = false;
+        public string PlayerAvailability { get; set; }
     }
 }

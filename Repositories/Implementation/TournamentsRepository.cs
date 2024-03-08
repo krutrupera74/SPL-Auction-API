@@ -68,7 +68,9 @@ namespace auction.Repositories.Implementation
                                 EndDate = x.Tournament.EndDate,
                                 IsActive = x.Tournament.IsActive,
                                 StartDate = x.Tournament.StartDate,
-                                Sport = sport.Name
+                                Sport = sport.Name,
+                                Venue=x.Tournament.Venue,
+                                TournamentDates=x.Tournament.TournamentDates
                             })
                         .ToListAsync();
         }
@@ -122,6 +124,8 @@ namespace auction.Repositories.Implementation
                 existingTournament.EndDate = Tournament.EndDate;
                 existingTournament.Description = Tournament.Description;
                 existingTournament.SportId = Tournament.SportId;
+                existingTournament.Venue = Tournament.Venue;
+                existingTournament.TournamentDates = Tournament.TournamentDates;
                 await dbContext.SaveChangesAsync();
                 return existingTournament;
             }
@@ -145,7 +149,9 @@ namespace auction.Repositories.Implementation
                     IsActive = result.Tournament.IsActive,
                     IsDuplicate = result.Tournament.IsDuplicate,
                     StartDate = result.Tournament.StartDate,
-                    IsCricket = result.SportName.Trim().Equals("cricket", StringComparison.OrdinalIgnoreCase)
+                    Venue = result.Tournament.Venue,
+                    TournamentDates = result.Tournament.TournamentDates,
+                    IsCricket = result.SportName.Trim().Equals("cricket", StringComparison.OrdinalIgnoreCase)                    
                 })
                 .FirstOrDefaultAsync();
         }
