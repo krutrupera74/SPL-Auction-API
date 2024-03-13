@@ -2,6 +2,7 @@ using auction.Models.Domain;
 using auction.Repositories.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace auction.Controllers
 {
@@ -23,15 +24,32 @@ namespace auction.Controllers
         [AllowAnonymous]
         [HttpPost]
         [Route("RegisterPlayer")]
-        public async Task<IActionResult> RegisterPlayer([FromBody] PlayersDTO request)
+        public async Task<IActionResult> RegisterPlayer()
         {
-            if(request == null)
-            {
-                return BadRequest("Player details are null.");
-            }
-
             var formCollection = await Request.ReadFormAsync();
             var file = formCollection.Files.GetFile("image");
+            var name = formCollection["name"];
+            var email = formCollection["email"];
+            var employeeNo = int.Parse(formCollection["employeeNo"]);
+            var gender = bool.Parse(formCollection["gender"]);
+            var playerRating = int.Parse(formCollection["playerRating"]);
+            var battingRating = int.Parse(formCollection["battingRating"]);
+            var bowlingRating = int.Parse(formCollection["bowlingRating"]);
+            var wicketKeepingRating = int.Parse(formCollection["wicketKeepingRating"]);
+            var batsmanHand = formCollection["batsmanHand"];
+            var bowlerHand = formCollection["bowlerHand"];
+            var bowlingStyle = formCollection["bowlingStyle"];
+            var interestedInCaptainOrOwner = bool.Parse(formCollection["interestedInCaptainOrOwner"]);
+            var captainOrOwner = formCollection["captainOrOwner"];
+            var comments = formCollection["comments"];
+            var tournamentId = Guid.Parse(formCollection["tournamentId"]);
+            var mobileNo = formCollection["mobileNo"];
+            var playerAvailability = formCollection["playerAvailability"];
+
+            if (formCollection.IsNullOrEmpty())
+            {
+                return BadRequest("Request is null");
+            }
 
             if (file == null || file.Length == 0)
             {
@@ -47,29 +65,29 @@ namespace auction.Controllers
 
             Players player = new Players()
             {
-                Name = request.Name,
-                Gender = request.Gender,
-                comments = request.comments,
-                PlayerRating = request.PlayerRating,
-                TournamentId = request.TournamentId,
-                BatsmanHand = request.BatsmanHand,
-                BowlerHand = request.BowlerHand,
-                BowlingRating = request.BowlingRating,
-                BowlingStyle = request.BowlingStyle,
-                CaptainOrOwner = request.CaptainOrOwner,
-                Email = request.Email,
-                EmployeeNo = request.EmployeeNo,
-                InterestedInCaptainOrOwner = request.InterestedInCaptainOrOwner,
-                WicketKeepingRating = request.WicketKeepingRating,
-                PlayerAvailability = request.PlayerAvailability,
-                IsMarquee = request.IsMarquee,
-                Mobile = request.Mobile,
-                ImagePath = imageUrl
+                Name = name,
+                Gender = gender,
+                comments = comments,
+                PlayerRating = playerRating,
+                TournamentId = tournamentId,
+                BatsmanHand = batsmanHand,
+                BowlerHand = bowlerHand,
+                BowlingRating = bowlingRating,
+                BattingRating = battingRating,
+                BowlingStyle = bowlingStyle,
+                CaptainOrOwner = captainOrOwner,
+                Email = email,
+                EmployeeNo = employeeNo,
+                InterestedInCaptainOrOwner = interestedInCaptainOrOwner,
+                WicketKeepingRating = wicketKeepingRating,
+                ImagePath = imageUrl,
+                PlayerAvailability = playerAvailability,
+                Mobile = mobileNo
             };
 
             var addedPlayer = await playerRepository.AddPlayer(player);
 
-            if(addedPlayer == null)
+            if (addedPlayer == null)
             {
                 var BadResponse = new ResponseModel
                 {
@@ -107,7 +125,7 @@ namespace auction.Controllers
                         Data = null
                     };
 
-                    return Unauthorized(NotFoundResponse);
+                    return Ok(NotFoundResponse);
                 }
 
                 var response = new ResponseModel
@@ -128,7 +146,7 @@ namespace auction.Controllers
                     Data = null
                 };
 
-                return Unauthorized(NotFoundResponse);
+                return Ok(NotFoundResponse);
             }
         }
     }
